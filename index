@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arqiba - Provador Virtual</title>
+    <style>
+        /* Paleta de Cores Arqiba */
+        :root {
+            --preto: #000000;
+            --branco: #ffffff;
+            --verde: #4b7f29;
+            --amarelo: #ffd308;
+            --azul: #035c8e;
+            --fundo: #ffffff; 
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--fundo);
+            color: var(--preto);
+            display: flex;
+            justify-content: center;
+            padding: 10px;
+            margin: 0;
+            min-height: 100vh;
+        }
+        
+        .container {
+            background-color: var(--branco);
+            padding: 25px;
+            width: 100%;
+            max-width: 480px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        }
+
+        /* Header e Branding */
+        .header {
+            text-align: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid rgba(0,0,0,0.05);
+        }
+        
+        .logo-arqiba {
+            max-width: 300px;
+            width: 100%;
+            height: auto;
+            margin-bottom: 8px;
+        }
+
+        .header .slogan {
+            color: var(--preto);
+            font-size: 16px; 
+            font-style: italic;
+            font-weight: 800;
+            margin-top: 5px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .descricao {
+            background-color: rgba(3, 92, 142, 0.04);
+            padding: 18px;
+            border-radius: 12px;
+            font-size: 14px;
+            color: var(--preto);
+            text-align: center;
+            line-height: 1.5;
+            margin-bottom: 25px;
+            border-left: 5px solid var(--azul);
+        }
+
+        /* Abas Estilizadas */
+        .tabs { 
+            display: flex; 
+            margin-bottom: 25px; 
+            background: #f5f5f5; 
+            border-radius: 10px; 
+            padding: 5px; 
+        }
+        .tab { 
+            flex: 1; 
+            padding: 14px; 
+            text-align: center; 
+            cursor: pointer; 
+            font-weight: 800; 
+            color: #777; 
+            border-radius: 6px; 
+            transition: all 0.2s ease; 
+            font-size: 13px;
+            text-transform: uppercase;
+        }
+        .tab.active { 
+            background: var(--amarelo); 
+            color: var(--preto); 
+            box-shadow: 0 3px 8px rgba(0,0,0,0.1); 
+        }
+
+        /* Formulário */
+        .form-grid { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 15px; 
+        }
+        .full-width { 
+            grid-column: span 2; 
+        }
+        
+        label { 
+            font-weight: 700; 
+            display: block; 
+            margin-top: 10px; 
+            font-size: 13px; 
+            color: var(--azul); 
+            text-transform: uppercase;
+        }
+        select, input { 
+            width: 100%; 
+            padding: 14px; 
+            margin-top: 6px; 
+            border: 2px solid #eee; 
+            border-radius: 10px; 
+            box-sizing: border-box; 
+            font-size: 16px; 
+            background: #fafafa;
+            transition: all 0.3s;
+        }
+        select:focus, input:focus {
+            outline: none;
+            border-color: var(--azul);
+            background: var(--branco);
+        }
+        
+        /* Botão de Ação */
+        button { 
+            width: 100%; 
+            padding: 18px; 
+            background-color: var(--amarelo); 
+            color: var(--preto); 
+            border: none; 
+            border-radius: 10px; 
+            font-size: 18px; 
+            font-weight: 900; 
+            margin-top: 30px; 
+            cursor: pointer; 
+            transition: transform 0.2s, background-color 0.2s; 
+            text-transform: uppercase;
+            box-shadow: 0 4px 15px rgba(255, 211, 8, 0.3);
+        }
+        button:hover { 
+            background-color: #f2c700; 
+            transform: scale(1.02); 
+        }
+
+        /* Resultado Premium */
+        #resultado { 
+            margin-top: 25px; 
+            padding: 25px; 
+            border-radius: 15px; 
+            font-weight: bold; 
+            text-align: center; 
+            display: none; 
+            animation: slideUp 0.5s ease-out; 
+        }
+        @keyframes slideUp { 
+            from { opacity: 0; transform: translateY(20px); } 
+            to { opacity: 1; transform: translateY(0); } 
+        }
+
+        .form-section { 
+            display: none; 
+        }
+        .form-section.active { 
+            display: block; 
+        }
+
+        .logo-resultado {
+            max-width: 100px;
+            height: auto;
+            margin-bottom: 12px;
+            display: inline-block;
+        }
+
+        /* Tabela de referência */
+        .tabela-referencia {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 8px;
+            font-size: 11px;
+        }
+
+        .tabela-referencia table {
+            width: 100%;
+            border-collapse: collapse;
+            color: white;
+        }
+
+        .tabela-referencia th,
+        .tabela-referencia td {
+            padding: 8px 5px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .tabela-referencia th {
+            font-weight: 800;
+            border-bottom: 2px solid rgba(255,255,255,0.4);
+        }
+
+        /* Responsividade */
+        @media (max-width: 480px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .logo-arqiba {
+                max-width: 250px;
+            }
+            
+            .tab {
+                padding: 12px 8px;
+                font-size: 12px;
+            }
+        }
+
+        /* Tooltip de ajuda */
+        .input-hint {
+            font-size: 11px;
+            color: #666;
+            margin-top: 4px;
+            font-weight: normal;
+        }
+
+        /* Indicador de confiança */
+        .confianca-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 800;
+            margin-top: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .confianca-alta {
+            background: rgba(255,255,255,0.3);
+            color: white;
+        }
+
+        .confianca-media {
+            background: rgba(255,255,255,0.2);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <img src="https://lh3.googleusercontent.com/d/1v79815vDWeHIIdOUs7_K7I7mJlfQZKQ4" alt="Arqiba Logo" class="logo-arqiba">
+        <p class="slogan">"A ARQUIBANCADA VESTE AQUI!"</p>
+    </div>
+
+    <div class="descricao">
+        <strong>Bem-vindo ao nosso Provador Virtual! ⚽</strong><br>
+        Não sabe qual tamanho escolher? Preencha os seus dados corporais ou as medidas de uma camisa que já tenha, e a nossa ferramenta sugerirá o tamanho ideal baseado nas medidas oficiais Arqiba.
+    </div>
+
+    <div class="form-grid">
+        <div class="full-width">
+            <label>👤 Gênero:</label>
+            <select id="genero">
+                <option value="masculino">Masculino</option>
+                <option value="feminino">Feminino</option>
+            </select>
+        </div>
+
+        <div class="full-width">
+            <label>🎂 Idade:</label>
+            <input type="number" id="idade" min="1" max="120" placeholder="Ex: 25">
+            <div class="input-hint">A idade ajuda a refinar a sugestão</div>
+        </div>
+
+        <div>
+            <label>👕 Modelo:</label>
+            <select id="modelo">
+                <option value="torcedor">Torcedor (Solta)</option>
+                <option value="jogador">Jogador (Justa)</option>
+            </select>
+        </div>
+
+        <div>
+            <label>✨ Caimento:</label>
+            <select id="caimento">
+                <option value="justo">Bem Justa</option>
+                <option value="normal" selected>Normal</option>
+                <option value="largo">Mais Larga</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="tabs">
+        <div class="tab active" onclick="mudarAba('medidasCorpo', this)">⚖️ Peso e Altura</div>
+        <div class="tab" onclick="mudarAba('medidasCamisa', this)">📏 Fita Métrica</div>
+    </div>
+
+    <div id="medidasCorpo" class="form-section active">
+        <div class="form-grid">
+            <div>
+                <label>Peso (kg):</label>
+                <input type="number" id="peso" placeholder="Ex: 80" min="30" max="250" step="0.1">
+                <div class="input-hint">Entre 30 e 250 kg</div>
+            </div>
+            <div>
+                <label>Altura (cm):</label>
+                <input type="number" id="alturaCorpo" placeholder="Ex: 175" min="100" max="250">
+                <div class="input-hint">Entre 100 e 250 cm</div>
+            </div>
+        </div>
+    </div>
+
+    <div id="medidasCamisa" class="form-section">
+        <div class="form-grid">
+            <div>
+                <label>Largura (cm):</label>
+                <input type="number" id="largura" placeholder="Ex: 55" min="30" max="100" step="0.1">
+                <div class="input-hint">Meça de axila a axila</div>
+            </div>
+            <div>
+                <label>Altura (cm):</label>
+                <input type="number" id="alturaCamisa" placeholder="Ex: 72" min="40" max="100" step="0.1">
+                <div class="input-hint">Do ombro até a barra</div>
+            </div>
+        </div>
+    </div>
+
+    <button onclick="calcularTamanho()">Calcular Sugestão</button>
+
+    <div id="resultado"></div>
+</div>
+
+<script>
+    let abaAtual = 'medidasCorpo';
+    const tamanhos = ["P", "M", "G", "GG"];
+    
+    // MEDIDAS OFICIAIS ARQIBA
+    const MEDIDAS_OFICIAIS = {
+        masculino: {
+            P: { largura: [53, 54], altura: [64, 66] },
+            M: { largura: [54, 55], altura: [70, 72] },
+            G: { largura: [55, 56], altura: [74, 76] },
+            GG: { largura: [56, 57], altura: [78, 80] }
+        },
+        feminino: {
+            P: { largura: [42, 44], altura: [60, 62] },
+            M: { largura: [44, 46], altura: [62, 64] },
+            G: { largura: [46, 48], altura: [64, 66] },
+            GG: { largura: [50, 52], altura: [66, 68] }
+        }
+    };
+    
+    // Carregar preferências salvas
+    window.addEventListener('load', function() {
+        const dadosSalvos = localStorage.getItem('arqiba_preferencias');
+        if (dadosSalvos) {
+            try {
+                const dados = JSON.parse(dadosSalvos);
+                if (dados.genero) document.getElementById('genero').value = dados.genero;
+                if (dados.modelo) document.getElementById('modelo').value = dados.modelo;
+                if (dados.caimento) document.getElementById('caimento').value = dados.caimento;
+            } catch(e) {
+                console.log('Erro ao carregar preferências');
+            }
+        }
+    });
+
+    function mudarAba(id, el) {
+        abaAtual = id;
+        document.querySelectorAll('.form-section').forEach(s => s.classList.remove('active'));
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        el.classList.add('active');
+        document.getElementById('resultado').style.display = 'none';
+    }
+
+    function salvarPreferencias() {
+        const dados = {
+            genero: document.getElementById('genero').value,
+            modelo: document.getElementById('modelo').value,
+            caimento: document.getElementById('caimento').value
+        };
+        localStorage.setItem('arqiba_preferencias', JSON.stringify(dados));
+    }
+
+    function validarIdade(idade) {
+        if (!idade) return true;
+        if (idade < 1 || idade > 120) {
+            erro("Por favor, insira uma idade válida (1-120 anos)");
+            return false;
+        }
+        return true;
+    }
+
+    // Função para encontrar o tamanho baseado nas medidas da camisa
+    function encontrarTamanhoPorMedidas(largura, altura, genero) {
+        const medidas = MEDIDAS_OFICIAIS[genero];
+        let melhorTamanho = "P";
+        let menorDiferenca = Infinity;
+        
+        for (const [tamanho, faixas] of Object.entries(medidas)) {
+            // Calcular o ponto médio das faixas
+            const larguraMedia = (faixas.largura[0] + faixas.largura[1]) / 2;
+            const alturaMedia = (faixas.altura[0] + faixas.altura[1]) / 2;
+            
+            // Verificar se a medida está dentro da faixa (com pequena tolerância)
+            const tolerancia = 1.5; // cm de tolerância
+            const dentroLargura = largura >= (faixas.largura[0] - tolerancia) && 
+                                  largura <= (faixas.largura[1] + tolerancia);
+            const dentroAltura = altura >= (faixas.altura[0] - tolerancia) && 
+                                altura <= (faixas.altura[1] + tolerancia);
+            
+            if (dentroLargura && dentroAltura) {
+                return tamanho;
+            }
+            
+            // Se não estiver perfeitamente dentro, calcular a distância
+            const difLargura = Math.abs(largura - larguraMedia);
+            const difAltura = Math.abs(altura - alturaMedia);
+            const diferencaTotal = difLargura + difAltura;
+            
+            if (diferencaTotal < menorDiferenca) {
+                menorDiferenca = diferencaTotal;
+                melhorTamanho = tamanho;
+            }
+        }
+        
+        return melhorTamanho;
+    }
+
+    // Função para estimar tamanho baseado em peso e altura
+    function estimarTamanhoPorCorpo(peso, altura, genero, idade) {
+        const imc = peso / ((altura/100) * (altura/100));
+        
+        if (genero === 'masculino') {
+            // Baseado nas medidas reais das camisas masculinas Arqiba
+            if (altura <= 168) {
+                if (peso <= 65) return "P";
+                if (peso <= 75) return "M";
+                if (peso <= 85) return "G";
+                return "GG";
+            } else if (altura <= 178) {
+                if (peso <= 70) return "P";
+                if (peso <= 80) return "M";
+                if (peso <= 90) return "G";
+                return "GG";
+            } else {
+                if (peso <= 75) return "P";
+                if (peso <= 85) return "M";
+                if (peso <= 95) return "G";
+                return "GG";
+            }
+        } else {
+            // Baseado nas medidas reais das camisas femininas Arqiba
+            if (altura <= 158) {
+                if (peso <= 55) return "P";
+                if (peso <= 65) return "M";
+                if (peso <= 75) return "G";
+                return "GG";
+            } else if (altura <= 168) {
+                if (peso <= 60) return "P";
+                if (peso <= 70) return "M";
+                if (peso <= 80) return "G";
+                return "GG";
+            } else {
+                if (peso <= 65) return "P";
+                if (peso <= 75) return "M";
+                if (peso <= 85) return "G";
+                return "GG";
+            }
+        }
+    }
+
+    function ajustarTamanho(tamanhoBase, modelo, caimento) {
+        const indiceTamanhos = ["P", "M", "G", "GG"];
+        let indice = indiceTamanhos.indexOf(tamanhoBase);
+        
+        // Ajustes por modelo
+        if (modelo === 'jogador') {
+            indice = Math.min(indice + 1, indiceTamanhos.length - 1);
+        }
+        
+        // Ajustes por caimento
+        if (caimento === 'largo') {
+            indice = Math.min(indice + 1, indiceTamanhos.length - 1);
+        } else if (caimento === 'justo') {
+            indice = Math.max(indice - 1, 0);
+        }
+        
+        return indiceTamanhos[indice];
+    }
+
+    function calcularTamanho() {
+        const genero = document.getElementById('genero').value;
+        const modelo = document.getElementById('modelo').value;
+        const caimento = document.getElementById('caimento').value;
+        const idade = parseInt(document.getElementById('idade').value);
+        
+        if (!validarIdade(idade)) return;
+        
+        salvarPreferencias();
+        
+        let tamanhoSugerido = "";
+        let metodoUsado = '';
+
+        if (abaAtual === 'medidasCamisa') {
+            const larg = parseFloat(document.getElementById('largura').value);
+            const alt = parseFloat(document.getElementById('alturaCamisa').value);
+            
+            if (!larg || !alt) return erro("Preencha a largura e altura da camisa.");
+            if (larg < 30 || larg > 100) return erro("Largura deve estar entre 30 e 100 cm");
+            if (alt < 40 || alt > 100) return erro("Altura deve estar entre 40 e 100 cm");
+
+            metodoUsado = 'fita';
+            tamanhoSugerido = encontrarTamanhoPorMedidas(larg, alt, genero);
+            
+        } else {
+            const peso = parseFloat(document.getElementById('peso').value);
+            const altC = parseInt(document.getElementById('alturaCorpo').value);
+            
+            if (!peso || !altC) return erro("Preencha seu peso e altura.");
+            
+            if (peso < 30 || peso > 250) {
+                return erro("Por favor, insira um peso realista (30-250kg)");
+            }
+            if (altC < 100 || altC > 250) {
+                return erro("Por favor, insira uma altura realista (100-250cm)");
+            }
+            
+            metodoUsado = 'corpo';
+            tamanhoSugerido = estimarTamanhoPorCorpo(peso, altC, genero, idade);
+        }
+
+        // Aplicar ajustes de modelo e caimento
+        tamanhoSugerido = ajustarTamanho(tamanhoSugerido, modelo, caimento);
+        
+        sucesso(tamanhoSugerido, modelo, caimento, genero, metodoUsado);
+    }
+
+    function erro(m) {
+        const res = document.getElementById('resultado');
+        res.style.display = "block";
+        res.style.backgroundColor = "#fff0f0";
+        res.style.color = "#cc0000";
+        res.style.border = "2px solid #ffcccc";
+        res.innerHTML = `
+            <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
+                <span style="font-size: 24px;">⚠️</span>
+                <span>${m}</span>
+            </div>
+        `;
+    }
+
+    function gerarTabelaReferencia(genero) {
+        const medidas = MEDIDAS_OFICIAIS[genero];
+        
+        let html = `
+            <div class="tabela-referencia">
+                <table>
+                    <tr>
+                        <th>Tamanho</th>
+                        <th>Largura</th>
+                        <th>Altura</th>
+                    </tr>`;
+        
+        for (const [tamanho, faixas] of Object.entries(medidas)) {
+            html += `<tr>
+                <td><strong>${tamanho}</strong></td>
+                <td>${faixas.largura[0]}-${faixas.largura[1]}cm</td>
+                <td>${faixas.altura[0]}-${faixas.altura[1]}cm</td>
+            </tr>`;
+        }
+        
+        html += `</table></div>`;
+        return html;
+    }
+
+    function sucesso(tam, mod, cai, genero, metodo) {
+        const res = document.getElementById('resultado');
+        res.style.display = "block";
+        res.style.backgroundColor = "var(--verde)";
+        res.style.color = "var(--branco)";
+        res.style.border = "none";
+        
+        let modeloTexto = mod === 'jogador' ? 'Jogador (Slim)' : 'Torcedor';
+        let caimentoTexto = cai === 'justo' ? 'Mais justa' : (cai === 'largo' ? 'Mais solta' : 'Normal');
+        
+        // Determinar confiança da sugestão
+        let confianca = "Alta";
+        let confiancaClasse = "confianca-alta";
+        if (metodo === 'corpo') {
+            confianca = "Média-Alta";
+            confiancaClasse = "confianca-media";
+        }
+
+        // Mensagem personalizada baseada no tamanho
+        let mensagemTamanho = "";
+        const medidas = MEDIDAS_OFICIAIS[genero][tam];
+        
+        if (tam === "P") mensagemTamanho = "Ideal para corpo mais slim";
+        else if (tam === "M") mensagemTamanho = "Tamanho mais comum entre brasileiros";
+        else if (tam === "G") mensagemTamanho = "Confortável para quem prefere folga";
+        else if (tam === "GG") mensagemTamanho = "Para quem gosta de camisa mais solta";
+
+        res.innerHTML = `
+        <img src="https://lh3.googleusercontent.com/d/1v79815vDWeHIIdOUs7_K7I7mJlfQZKQ4" alt="Arqiba Logo" class="logo-resultado"><br>
+        SUGESTÃO DE TAMANHO: <br>
+        <span style="font-size: 56px; line-height: 1.2; font-weight: 900;">${tam}</span><br>
+        
+        <div class="confianca-badge ${confiancaClasse}">
+            ⭐ Confiança: ${confianca}
+        </div>
+        
+        <small style="font-weight: normal; opacity: 0.9; display: block; margin-top: 12px;">
+            Modelo ${modeloTexto} com caimento ${caimentoTexto.toLowerCase()}.<br>
+            <span style="font-size: 12px; display: block; margin-top: 5px;">${mensagemTamanho}</span>
+        </small>
+        
+        ${gerarTabelaReferencia(genero)}
+        
+        <hr style="border: 0; height: 1px; background: rgba(255,255,255,0.25); margin: 20px 0;">
+        
+        <span style="font-size: 11px; font-weight: normal; opacity: 0.9; line-height: 1.5; display: block; text-align: justify;">
+        *Medidas oficiais Arqiba para o tamanho ${tam}: Largura ${medidas.largura[0]}-${medidas.largura[1]}cm | Altura ${medidas.altura[0]}-${medidas.altura[1]}cm<br><br>
+        *Atenção: Este resultado é uma estimativa baseada nas medidas oficiais Arqiba. O caimento final pode variar de acordo com o biotipo de cada pessoa. Em caso de dúvida entre dois tamanhos, recomendamos escolher o maior para maior conforto.
+        </span>`;
+    }
+
+    // Adicionar listeners para salvar preferências automaticamente
+    document.getElementById('genero').addEventListener('change', salvarPreferencias);
+    document.getElementById('modelo').addEventListener('change', salvarPreferencias);
+    document.getElementById('caimento').addEventListener('change', salvarPreferencias);
+    
+    // Permitir calcular com Enter
+    document.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            calcularTamanho();
+        }
+    });
+</script>
+
+</body>
+</html>
